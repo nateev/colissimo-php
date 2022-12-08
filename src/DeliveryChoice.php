@@ -168,8 +168,6 @@ class DeliveryChoice extends Colissimo
             $options
         );
 
-
-
         $response = $this->httpRequest(
             'findPointRetraitAcheminementByID',
             $options
@@ -181,7 +179,6 @@ class DeliveryChoice extends Colissimo
         if (count($return) && $return[0]->errorCode != 0) {
             $this->parseErrorCodeAndThrow((int) $return[0]->errorCode, self::ERRORS);
         }
-
 
         $rawPickupPoint = $xml->xpath('//pointRetraitAcheminement');
         if (count($rawPickupPoint) && $rawPickupPoint[0]) {

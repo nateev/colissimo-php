@@ -61,7 +61,6 @@ class ParcelTracking extends Colissimo
             $options
         );
 
-
         $xml = new SimpleXMLElement((string) $response->getBody());
 
         $return = $xml->xpath('//return');
