@@ -185,17 +185,55 @@ class PickupPoint
             return [];
         }
 
-        $validOpenings = array_filter(
+        $openings = array_filter(
             $partialOpenings,
             function ($partial) {
                 return $partial != '00:00-00:00';
             }
         );
 
-        if (count($validOpenings) == 2 && $validOpenings[0] == $validOpenings[1]) {
+        if (count($openings) == 2 && $openings[0] == $openings[1]) {
             return [
-                $validOpenings[0]
+                $openings[0]
             ];
+        }
+
+        $validOpenings = $this->_sanitizeRangeTime($openings);
+
+        return $validOpenings;
+    }
+
+    /**
+     * Sanitizes overlapping time ranges within an array of time ranges.
+     *
+     * This function takes an array of time ranges (e.g., ["09:00-12:00", "11:00-14:00"])
+     * and adjusts them to ensure that there are no overlaps between consecutive ranges.
+     * If an overlap is detected, the end time of the previous range is adjusted to match
+     * the start time of the current range.
+     *
+     * @param array $openings Array of time ranges e.g. ["09:00-12:00", "11:00-14:00"]
+     *
+     * @return array Adjusted array of time ranges with no overlaps.
+     */
+    private function _sanitizeRangeTime($openings) {
+        $validOpenings = [];
+
+        foreach ($openings as $key => $opening) {
+            // Split the start and end times
+            list($start, $end) = explode('-', $opening);
+
+            // Check if this is not the first opening and there is a previous end time to compare with
+            if ($key > 0 && isset($validOpenings[$key - 1])) {
+                list($prevStart, $prevEnd) = explode('-', $validOpenings[$key - 1]);
+
+                // If the previous end time is greater than the current start time, adjust the previous end time
+                if ($prevEnd > $start) {
+                    $validOpenings[$key - 1] = $prevStart . '-' . $start;
+                }
+            }
+
+            // Add the (possibly adjusted) opening to the array
+            $validOpenings[] = $start . '-' . $end;
         }
 
         return $validOpenings;
