@@ -105,31 +105,45 @@ class PickupPoint
         $this->data['openingsDateStart'] = $periodeActiviteHoraireDeb;
         $this->data['openingsDateEnd'] = $periodeActiviteHoraireFin;
 
-        $this->data['openings'] = OpeningHours::create(
-            [
-                'monday' => $this->_formatRangeTime(
-                    $horairesOuvertureLundi
-                ),
-                'tuesday' => $this->_formatRangeTime(
-                    $horairesOuvertureMardi
-                ),
-                'wednesday' => $this->_formatRangeTime(
-                    $horairesOuvertureMercredi
-                ),
-                'thursday' => $this->_formatRangeTime(
-                    $horairesOuvertureJeudi
-                ),
-                'friday' => $this->_formatRangeTime(
-                    $horairesOuvertureVendredi
-                ),
-                'saturday' => $this->_formatRangeTime(
-                    $horairesOuvertureSamedi
-                ),
-                'sunday' => $this->_formatRangeTime(
-                    $horairesOuvertureDimanche
-                ),
-            ]
-        );
+        try {
+            $this->data['openings'] = OpeningHours::create(
+                [
+                    'monday' => $this->_formatRangeTime(
+                        $horairesOuvertureLundi
+                    ),
+                    'tuesday' => $this->_formatRangeTime(
+                        $horairesOuvertureMardi
+                    ),
+                    'wednesday' => $this->_formatRangeTime(
+                        $horairesOuvertureMercredi
+                    ),
+                    'thursday' => $this->_formatRangeTime(
+                        $horairesOuvertureJeudi
+                    ),
+                    'friday' => $this->_formatRangeTime(
+                        $horairesOuvertureVendredi
+                    ),
+                    'saturday' => $this->_formatRangeTime(
+                        $horairesOuvertureSamedi
+                    ),
+                    'sunday' => $this->_formatRangeTime(
+                        $horairesOuvertureDimanche
+                    ),
+                ]
+            );
+        } catch (\Throwable $th) {
+            $this->data['openings'] = OpeningHours::create(
+                [
+                    'monday' => $this->_formatRangeTime(''),
+                    'tuesday' => $this->_formatRangeTime(''),
+                    'wednesday' => $this->_formatRangeTime(''),
+                    'thursday' => $this->_formatRangeTime(''),
+                    'friday' => $this->_formatRangeTime(''),
+                    'saturday' => $this->_formatRangeTime(''),
+                    'sunday' => $this->_formatRangeTime(''),
+                ]
+            );
+        }
 
         if (isset($listeConges)) {
             $holidays = [];
